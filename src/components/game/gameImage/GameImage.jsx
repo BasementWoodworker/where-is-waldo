@@ -17,7 +17,7 @@ const wendaPosition = {
   lowerBorder: 0.975
 }
 
-export function GameImage({ db }) {
+export function GameImage({ db, charactersLeft, setCharactersLeft }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({top: 0, left: 0});
   const [currentTryPosition, setCurretTryPosition] = useState({x: 0, y: 0});
@@ -39,12 +39,14 @@ export function GameImage({ db }) {
 
   return(
     <StyledGameImage>
-      <img src={gameImage} onClick={clickHandler} />
+      <img src={gameImage} alt="game image" onClick={clickHandler} />
       {showDropdown && <DropdownSelection 
         dropdownPosition={dropdownPosition}
         setShowDropdown={setShowDropdown}
         currentTryPosition={currentTryPosition}
-        db={db} />
+        db={db}
+        charactersLeft={charactersLeft}
+        setCharactersLeft={setCharactersLeft} />
       }
     </StyledGameImage>
   )
