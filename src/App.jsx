@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { 
   getFirestore
@@ -15,13 +15,19 @@ const db = getFirestore(firebaseApp);
 
 export function App() {
   const [charactersLeft, setCharactersLeft] = useState(["waldo", "wenda"]);
+  const [startTime, setStartTime] = useState(Date.now());
+  const [resultTime, setResultTime] = useState(undefined);
+
+  useEffect(() => {
+    if (charactersLeft.length === 0) setResultTime((Date.now() - startTime) / 1000);
+  }, [charactersLeft])
 
   return(
     <>
       <GlobalStyles />
       <GameDescription />
       <GameImage db={db} charactersLeft={charactersLeft} setCharactersLeft={setCharactersLeft} />
-      {charactersLeft.length === 0 ? <ScoreBoard /> : null}
+      {charactersLeft.length === 2 ? <ScoreBoard db={db} resultTime={resultTime} /> : null}
     </>
   )
 }
