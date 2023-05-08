@@ -59,7 +59,7 @@ export function ScoreBoard({ db, resultTime }) {
           <button>submit</button>
         </div>
       </form>
-      <a href="/" className="restart">Restart</a>
+      <a href="" className="restart">Restart</a>
     </StyledScoreBoard>
   )
 }
