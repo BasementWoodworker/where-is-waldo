@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { initializeApp } from "firebase/app";
 import { 
   getFirestore,
@@ -11,7 +11,6 @@ import { GlobalStyles } from "./GlobalStyles";
 import { GameDescription } from "./components/game/gameDescription/GameDescription";
 import { GameImage } from "./components/game/gameImage/GameImage";
 import { ScoreBoard } from "./components/scoreBoard/ScoreBoard";
-import { TagRectangle } from "./components/game/gameImage/tagRectangle/TagRectangle";
 import { checkUserTry } from "./components/game/checkUserTry";
 
 const firebaseApp = initializeApp(getFirebaseConfig());
@@ -19,12 +18,14 @@ const db = getFirestore(firebaseApp);
 
 export function App() {
   const [charactersLeft, setCharactersLeft] = useState(["waldo", "wenda"]);
-  const [startTime, setStartTime] = useState(Date.now());
+  const startTime = useRef(Date.now());
   const [resultTime, setResultTime] = useState(undefined);
   const [tagRectangles, setTagRectangles] = useState([]);
   const [currentTryPosition, setCurretTryPosition] = useState({x: 0, y: 0});
   const [currentImageHeight, setCurrentImageHeight] = useState(0);
   const [currentImageWidth, setCurrentImageWidth] = useState(0);
+  const [guessMessage, setGuessMessage] = useState(null);
+  let guessMessageTimeoutId = useRef();
 
   async function getCharacterPosition(character) {
     const docRef = doc(db, "character_positions", character);
@@ -38,21 +39,29 @@ export function App() {
       const characterPosition = await getCharacterPosition(character);
       const result = checkUserTry(currentTryPosition, characterPosition);
       if (result) {
-        setCharactersLeft(charactersLeft.filter(elem => elem !== character));
-        console.log(currentImageHeight);
-        console.log(currentImageWidth);
+        if (charactersLeft.length !== 1) {
+          setCharactersLeft(charactersLeft.filter(elem => elem !== character));
+        } else {
+          setResultTime((Date.now() - startTime.current) / 1000);
+          setTimeout(() => setCharactersLeft([]), 700);
+        }
         const newTagRectangle = {
           position: characterPosition,
           characterName: character,
         }
         setTagRectangles(tagRectangles.concat(newTagRectangle));
       }
+      const newGuessMessage = {
+        position: currentTryPosition,
+        correct: result
+      }
+      setGuessMessage(newGuessMessage);
+      clearTimeout(guessMessageTimeoutId.current);
+      guessMessageTimeoutId.current = setTimeout(() => {
+        setGuessMessage(null);
+      }, 1500)
     }
   }
-
-  useEffect(() => {
-    if (charactersLeft.length === 0) setResultTime((Date.now() - startTime) / 1000);
-  }, [charactersLeft])
 
   return(
     <>
@@ -69,6 +78,7 @@ export function App() {
         setCurrentImageHeight={setCurrentImageHeight}
         setCurrentImageWidth={setCurrentImageWidth}
         tagRectangles={tagRectangles}
+        guessMessage={guessMessage}
       />
       {charactersLeft.length === 0 ? <ScoreBoard db={db} resultTime={resultTime} /> : null}
     </>

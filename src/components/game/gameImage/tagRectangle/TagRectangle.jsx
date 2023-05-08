@@ -2,7 +2,6 @@ import React from "react";
 import { StyledTagRectangle } from "./TagRectangle.styles";
 
 export function TagRectangle({ position, characterName, currentImageHeight, currentImageWidth }) {
-  console.log("rectangle update");
   const left = position.leftBorder * currentImageWidth + "px";
   const top = position.upperBorder * currentImageHeight + "px";
   const height = (position.lowerBorder - position.upperBorder) * currentImageHeight + "px";

@@ -8,7 +8,7 @@ export const StyledScoreBoard = styled.div`
   margin: auto;
   padding: 10px;
   width: min(500px, 80%);
-  height: min(650px, 90%);
+  height: min-content;
   font-size: 30px;
   text-align: center;
   background-color: white;
@@ -40,18 +40,33 @@ export const StyledScoreBoard = styled.div`
 
   form > * {
     margin: 20px;
+    font-size: 20px;
   }
 
   form > .input-container {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border: 1px solid black;
+  }
+
+  .input-container > * {
+    height: min-content;
+    font-size: inherit;
+    margin: 4px auto;
   }
 
   .input-container > label {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 4px auto;
   }
 
-  .input-container input {
-    
+  .input-container > label > * {
+    height: min-content;
+    padding: 4px;
+    margin: 4px auto;
   }
 
   a.restart {

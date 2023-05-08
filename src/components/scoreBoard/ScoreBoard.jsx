@@ -15,7 +15,6 @@ export function ScoreBoard({ db, resultTime }) {
   async function updateLeaderboard() {
     const leaderboardData = await getLeaderboard();
     leaderboardData.sort((prev, current) => {
-      console.log (Object.values(prev.data())[0])
       return Object.values(prev.data())[0] - Object.values(current.data())[0];
     })
     const jsxArray = leaderboardData.map(doc => {
@@ -32,7 +31,6 @@ export function ScoreBoard({ db, resultTime }) {
 
   async function submitHandler(e) {
     e.preventDefault();
-    console.log(inputContainerRef.current.value);
     await addDoc(collection(db, "leaderboard"), {
       [inputContainerRef.current.querySelector("input").value]: resultTime
     });
