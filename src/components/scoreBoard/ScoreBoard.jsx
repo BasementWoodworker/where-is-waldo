@@ -54,7 +54,7 @@ export function ScoreBoard({ db, resultTime }) {
         <div className="input-container" ref={inputContainerRef}>
           <label>
             <span>Enter your name</span>
-            <input type="text" maxLength="20" />
+            <input type="text" maxLength="20" required />
           </label>
           <button>submit</button>
         </div>
