@@ -12,7 +12,15 @@ module.exports = {
     clean: true
   },
   plugins: [
-    new HtmlWebpackPlugin({ title: "Where's Waldo?" })
+    new HtmlWebpackPlugin({ 
+      title: "Where's Waldo?",
+      meta: {
+        someName: {
+          "http-equiv": "Permissions-Policy",
+          content: "interest-cohort=()"
+        }
+      }
+    })
   ],
   module: {
     rules: [
