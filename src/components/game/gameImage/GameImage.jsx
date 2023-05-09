@@ -16,6 +16,7 @@ export function GameImage({
   setCurrentImageHeight, 
   setCurrentImageWidth 
   }) {
+    const [imageLoaded, setImageLoaded] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
     const [dropdownPosition, setDropdownPosition] = useState({top: 0, left: 0});
     const gameImageRef = createRef();
@@ -39,33 +40,34 @@ export function GameImage({
       }, 7000);
     }
 
-    useEffect(() => {
-      gameImageRef.current.onload = function(e) {
-        // Wait for the image to load so height is not set to 0;
-        setCurrentImageHeight(e.target.height);
-        setCurrentImageWidth(e.target.width);
-      }
+    function updateCurrentDimensions() {
+      setCurrentImageHeight(gameImageRef.current.height);
+      setCurrentImageWidth(gameImageRef.current.width);
+    }
 
+    function onImageLoad() {
+      console.log("react onLoad got called");
+      updateCurrentDimensions();
+      setImageLoaded(true);
+    }
+
+    useEffect(() => {
       let timeoutId = null;
       function resizeListener() {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function() {
-          const gameImage = document.querySelector(".game-image");
-          setCurrentImageHeight(gameImage.height);
-          setCurrentImageWidth(gameImage.width);
-        }, 100)
+        timeoutId = setTimeout(updateCurrentDimensions, 100);
       }
       window.addEventListener("resize", resizeListener);
 
       return function cleanup() {
         window.removeEventListener("resize", resizeListener);
       }
-    }, [])
+    }, [gameImageRef])
 
     return(
       <StyledGameImage>
-        <img className="game-image" src={gameImage} alt="game image" onClick={clickHandler} ref={gameImageRef} />
-        {showDropdown && <DropdownSelection 
+        <img className="game-image" src={gameImage} alt="game image" onClick={clickHandler} ref={gameImageRef} onLoad={onImageLoad} />
+        {showDropdown && imageLoaded && <DropdownSelection 
           dropdownPosition={dropdownPosition}
           setShowDropdown={setShowDropdown}
           charactersLeft={charactersLeft}
